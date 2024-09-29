@@ -1,0 +1,250 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "User API with JWT",
+        "version": "1.0.0",
+        "description": "A simple Express API that uses JWT for authentication"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "paths": {
+        "/appointment": {
+            "get": {
+                "summary": "Returns a list of all available appointment",
+                "description": "if the inputed date is holiday will return 422",
+                "tags": ["appointment"],
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-09-29"
+                        },
+                        "description": "The date to filter available appointments"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A JSON array of available appointment",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "date": {
+                                                "type": "date",
+                                                "example": "2024-09-29"
+                                            },
+                                            "time": {
+                                                "type": "time",
+                                                "example": "14:30:00"
+                                            },
+                                            "available": {
+                                                "type": "integer",
+                                                "example": "1"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "error when the appointment date is holiday",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "cannot get appointment at holiday"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Book Appointment",
+                "description": "if the inputed date is holiday will return 422",
+                "tags": ["appointment"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-09-26"
+                                    },
+                                    "time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "14:30"
+                                    }
+                                },
+                                "required": ["date", "time"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success Message Booked Appointment",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "appointment success booked"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "appointment not available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "appointment success booked"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "error when the appointment date is holiday",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "cannot set appointment at holiday"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/appointment/configuration": {
+            "put": {
+                "summary": "Update Configuration",
+                "description": "this update configuration will delete all appointment for inputed date,if the inputed date is holiday will return 422",
+                "tags": ["appointment"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-09-26"
+                                    },
+                                    "start_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "09:00"
+                                    },
+                                    "end_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "17:00"
+                                    },
+                                    "duration": {
+                                        "type": "integer",
+                                        "example": 30
+                                    },
+                                    "available_slot": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "required": [
+                                    "date",
+                                    "start_time",
+                                    "end_time",
+                                    "duration",
+                                    "available_slot"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success Update Configuration",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success update configuration"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "error when the appointment date is holiday",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "cannot set appointment at holiday"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
