@@ -1,0 +1,38 @@
+# little-live-test
+
+use express js as the framework
+
+# HOW TO START
+
+npm start
+
+assumtion
+
+-   for availabe appointment data there is a scheduler that will populate the data with default value to appointment table
+-   when change configuration for a date the data in that date like available appointment, booked appointment will be deleted
+
+# DATABASE
+
+using mysql because the data for all table don't need to have dinamic column,
+and with asumstion the write frequency is only happend when user change appointment
+there is more need to read than write the data
+
+# TABLE
+
+for the relation can be check at relation.png
+appointment : available appointment
+booked : booked appointment [not implemented yet]
+break : to list break time that will be used to generate appointment if configuration change for that day[not done yet]
+holiday : list of holiday
+configuration: to store configuration for that day, can be used to recheck the result of generated appointment with configuration [not implemented yet]
+
+# INDEX 
+
+for appointment table because the query that used that data will mainly filter the data using condition for date column it worth to add the index for the column.
+
+# API DOCUMENTATION
+
+using swagger
+the page can be access via api-docs/
+
+
