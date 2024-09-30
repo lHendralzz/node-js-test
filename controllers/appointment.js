@@ -1,4 +1,5 @@
 const Appointment = require("../models/appointment");
+const breakTime = require("../models/breakTime");
 const { format } = require("../util/database");
 const utilDate = require("../util/date");
 
@@ -112,35 +113,42 @@ exports.putConfiguration = (req, res, next) => {
             return;
         }
         // get break time
+        breakTime
+            .fetchByDate(req.body.date)
+            .then(([breakTimeLists]) => {
+                return breakTimeLists;
+            })
+            .then(breakTimeLists => {
+                // delete all appointment
+                Appointment.deleteAllByDate(req.body.date).then(() => {
+                    // TODO : delete all booked
 
-        // delete all appointment
-        Appointment.deleteAllByDate(req.body.date).then(() => {
-            // TODO : delete all booked
+                    // create all the available booking for that time as array
+                    const ListNewAppointments =
+                        Appointment.getListOfAvailabeAppointmentByDate(
+                            req.body.date,
+                            req.body.duration,
+                            req.body.available_slot,
+                            req.body.start_time,
+                            req.body.end_time,
+                            breakTimeLists
+                        );
 
-            // create all the available booking for that time as array
-            const ListNewAppointments =
-                Appointment.getListOfAvailabeAppointmentByDate(
-                    req.body.date,
-                    req.body.duration,
-                    req.body.available_slot,
-                    req.body.start_time,
-                    req.body.end_time
-                );
-
-            Appointment.saveBulk(ListNewAppointments)
-                .then(() => {
-                    res.status(200).send({
-                        message: "success update configuration",
-                    });
-                    return;
-                })
-                .catch(err => {
-                    res.status(500).send({
-                        message: "internal server error: ",
-                        err,
-                    });
-                    return;
+                    Appointment.saveBulk(ListNewAppointments)
+                        .then(() => {
+                            res.status(200).send({
+                                message: "success update configuration",
+                            });
+                            return;
+                        })
+                        .catch(err => {
+                            res.status(500).send({
+                                message: "internal server error: ",
+                                err,
+                            });
+                            return;
+                        });
                 });
-        });
+            });
     });
 };

@@ -1,4 +1,5 @@
 const db = require("../util/database");
+const time = require("../util/time");
 
 module.exports = class appointment {
     constructor(date, time, duration, available_slot) {
@@ -60,7 +61,8 @@ module.exports = class appointment {
         duration,
         available_slot,
         startTime,
-        endTime
+        endTime,
+        breakTimeLists
     ) {
         // list generated appointment
         const listAppointments = [];
@@ -73,6 +75,7 @@ module.exports = class appointment {
         const endTimeHour = endTime.split(":")[0];
         const endTimeMinute = endTime.split(":")[1];
         endTimeDate.setHours(endTimeHour, endTimeMinute, 0, 0);
+        let currBreakTime = breakTimeLists.shift();
 
         for (
             startTimeDate.setHours(startTimeHour, startTimeMinute, 0, 0);
@@ -80,6 +83,20 @@ module.exports = class appointment {
             startTimeDate.setMinutes(startTimeDate.getMinutes() + duration)
         ) {
             // TODO : check if time is in break array then skip to after break time;
+            while (
+                currBreakTime != undefined &&
+                time.isBetweenWithDuration(
+                    startTimeDate,
+                    duration,
+                    currBreakTime.start_time,
+                    currBreakTime.end_time
+                )
+            ) {
+                const afterBreakHour = currBreakTime.end_time.split(":")[0];
+                const afterBreakMinute = currBreakTime.end_time.split(":")[1];
+                startTimeDate.setHours(afterBreakHour, afterBreakMinute, 0, 0);
+                currBreakTime = breakTimeLists.shift();
+            }
             listAppointments.push(
                 new appointment(
                     date,
