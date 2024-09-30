@@ -82,7 +82,6 @@ module.exports = class appointment {
             startTimeDate <= endTimeDate;
             startTimeDate.setMinutes(startTimeDate.getMinutes() + duration)
         ) {
-            // TODO : check if time is in break array then skip to after break time;
             while (
                 currBreakTime != undefined &&
                 time.isBetweenWithDuration(
