@@ -22,7 +22,7 @@ there is more need to read than write the data
 for the relation can be check at relation.png
 appointment : available appointment
 booked : booked appointment [not implemented yet]
-break : to list break time that will be used to generate appointment if configuration change for that day[not done yet]
+break : to list break time that will be used to generate appointment if configuration change for that day
 holiday : list of holiday
 configuration: to store configuration for that day, can be used to recheck the result of generated appointment with configuration [not implemented yet]
 
